@@ -8,19 +8,18 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.19.0'
-      - run: flutter create. --project-name sewa_check_app --platforms android
+      - run: flutter create . --project-name sewa_check_app --platforms=android
+      - run: rm -f lib/main.dart
       - run: |
-          rm -f lib/main.dart
-          cat > lib/main.dart << 'ENDOFFILE'
+          cat > lib/main.dart << 'EOF'
           import 'package:flutter/material.dart';
           import 'package:url_launcher/url_launcher.dart';
           void main() => runApp(MaterialApp(home: SewaApp(), debugShowCheckedModeBanner: false));
           class SewaApp extends StatelessWidget {
             final String upi = "paytmqr5r2p7pm@ptys";
-            final String name = "Sewa Trust";
             void pay(int amt) async {
-              final url = Uri.parse("upi://pay?pa=$upi&pn=$name&am=$amt&cu=INR");
-              if (await canLaunchUrl(url)) await launchUrl(url);
+              final u = Uri.parse("upi://pay?pa=$upi&pn=Sewa Trust&am=$amt&cu=INR");
+              if (await canLaunchUrl(u)) await launchUrl(u);
             }
             @override
             Widget build(BuildContext context) {
@@ -28,7 +27,7 @@ jobs:
                 backgroundColor: Color(0xFFFFF8E1),
                 appBar: AppBar(title: Text("Sewa Check App"), backgroundColor: Colors.orange, centerTitle: true),
                 body: Padding(padding: EdgeInsets.all(20), child: Column(children: [
-                  Text("Donation Kare - Punya Paye!", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                  Text("Donation Kare!", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                   SizedBox(height: 20),
                   Row(children: [
                     Expanded(child: ElevatedButton(onPressed: () => pay(100), child: Text("Rs 100"))),
@@ -38,12 +37,12 @@ jobs:
                   SizedBox(height: 10),
                   SizedBox(width: double.infinity, child: ElevatedButton(onPressed: () => pay(1000), child: Text("Rs 1000 Donate"), style: ElevatedButton.styleFrom(backgroundColor: Colors.orange))),
                   SizedBox(height: 30),
-                  Card(child: ListTile(leading: Icon(Icons.verified, color: Colors.green), title: Text("UPI: paytmqr5r2p7pm@ptys"), subtitle: Text("100% Safe"))),
+                  Card(child: ListTile(leading: Icon(Icons.verified, color: Colors.green), title: Text("UPI: paytmqr5r2p7pm@ptys"))),
                 ])),
               );
             }
           }
-          ENDOFFILE
+          EOF
       - run: flutter pub add url_launcher
       - run: flutter build apk --release
       - uses: actions/upload-artifact@v4
