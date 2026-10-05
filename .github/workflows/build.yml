@@ -12,16 +12,16 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.22.0'
-      - run: flutter create. --project-name sewa_check_app_final
-      - run: rm -f lib/main.dart
+          channel: 'stable'
+      - run: flutter config --no-analytics
+      - run: flutter create. --project-name sewa_check_app_final --overwrite
       - run: |
-          cat > lib/main.dart << 'EOF'
+          cat > lib/main.dart << 'ENDOFFILE'
           import 'package:flutter/material.dart';
-          void main() => runApp(MaterialApp(home: SewaApp()));
-          class SewaApp extends StatelessWidget {
-            @override
-            Widget build(BuildContext context) {
-              return Scaffold(
+          void main() {
+            runApp(MaterialApp(
+              debugShowCheckedModeBanner: false,
+              home: Scaffold(
                 appBar: AppBar(title: Text('Sewa Check'), backgroundColor: Colors.orange),
                 body: Center(
                   child: Column(
@@ -30,15 +30,14 @@ jobs:
                       Icon(Icons.verified_user, size: 100, color: Colors.orange),
                       SizedBox(height: 20),
                       Text('Sewa Check App', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                      SizedBox(height: 10),
-                      Text('Welcome to Sewa App'),
+                      Text('Welcome', style: TextStyle(fontSize: 16)),
                     ],
                   ),
                 ),
-              );
-            }
+              ),
+            ));
           }
-          EOF
+          ENDOFFILE
       - run: flutter pub get
       - run: flutter build apk --release
       - uses: actions/upload-artifact@v4
