@@ -12,6 +12,33 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.22.0'
+      - run: flutter create. --project-name sewa_check_app_final
+      - run: rm -f lib/main.dart
+      - run: |
+          cat > lib/main.dart << 'EOF'
+          import 'package:flutter/material.dart';
+          void main() => runApp(MaterialApp(home: SewaApp()));
+          class SewaApp extends StatelessWidget {
+            @override
+            Widget build(BuildContext context) {
+              return Scaffold(
+                appBar: AppBar(title: Text('Sewa Check'), backgroundColor: Colors.orange),
+                body: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.verified_user, size: 100, color: Colors.orange),
+                      SizedBox(height: 20),
+                      Text('Sewa Check App', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                      SizedBox(height: 10),
+                      Text('Welcome to Sewa App'),
+                    ],
+                  ),
+                ),
+              );
+            }
+          }
+          EOF
       - run: flutter pub get
       - run: flutter build apk --release
       - uses: actions/upload-artifact@v4
